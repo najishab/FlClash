@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101473449616",
+    "project_id": "naji-clash",
+    "storage_bucket": "naji-clash.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101473449616:android:6e0e2b8b3f3a9c6f084a15",
+        "android_client_info": {
+          "package_name": "com.naji.clash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzh29pktXvw1Cy7uswe_6FYE4CZHk9V1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
