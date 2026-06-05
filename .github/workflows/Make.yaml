@@ -1,0 +1,62 @@
+name: Build Android APK fast
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24.0'
+          cache-dependency-path: |
+            core/go.sum
+
+      - name: Setup Java (With Gradle Cache)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle' # فعال‌سازی کاشه گریدل برای بالا بردن سرعت بیلدهای بعدی
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.41.9
+          cache: true
+
+      - name: Setup Android Signing
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+          echo "storeFile=keystore.jks" > android/key.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+
+      - name: Get Flutter Dependency
+        run: |
+          flutter --version
+          flutter pub get
+
+      - name: Setup Project
+        run: dart setup.dart android --env stable -v
+
+      - name: Build Signed APK
+        run: |
+          # دستور اصلی ساخت برنامه به صورت ریلیز و با اعمال مستقیم سورس کلید
+          flutter build apk --release
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlClash-Android-APK
+          path: build/app/outputs/flutter-apk/*.apk
+          overwrite: true
