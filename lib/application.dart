@@ -47,16 +47,15 @@ class ApplicationState extends ConsumerState<Application> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        if (globalState.navigatorKey.currentContext != null) {
-          await globalState.attach();
-        } else {
-          exit(0);
-        }
-        _autoUpdateProfilesTask();
-        await _addDefaultProfile();
-        _initLink();
-        app?.initShortcuts();
-      });
+      if (globalState.navigatorKey.currentContext != null) {
+        await globalState.attach();
+      } else {
+        exit(0);
+      }
+      _autoUpdateProfilesTask();
+      _initLink();
+      app?.initShortcuts();
+    });
   }
 
   void _initLink() {
@@ -89,21 +88,7 @@ class ApplicationState extends ConsumerState<Application> {
       _autoUpdateProfilesTask();
     });
   }
-  
-Future<void> _addDefaultProfile() async {
-    const defaultUrl =
-        'https://raw.githubusercontent.com/iampedii/whitedns-sub/refs/heads/main/mihomo.yaml';
 
-    final profiles = ref.read(profilesProvider);
-    final alreadyExists = profiles.any((p) => p.url == defaultUrl);
-    if (alreadyExists) return;
-
-    try {
-      await ref
-          .read(profilesActionProvider.notifier)
-          .addProfileFormURL(defaultUrl);
-    } catch (_) {}
-  }
   Widget _buildPlatformState({required Widget child}) {
     if (system.isDesktop) {
       return WindowManager(
