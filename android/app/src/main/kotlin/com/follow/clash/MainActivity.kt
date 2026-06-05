@@ -1,4 +1,4 @@
-package com.follow.clash
+package com.naji.clash
 
 import android.os.Bundle
 import com.follow.clash.common.GlobalState
